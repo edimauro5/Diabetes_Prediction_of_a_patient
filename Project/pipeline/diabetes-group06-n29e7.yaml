@@ -1,0 +1,1313 @@
+{
+  "kind": "Workflow",
+  "apiVersion": "argoproj.io/v1alpha1",
+  "metadata":
+    {
+      "generateName": "diabetes-group06-",
+      "creationTimestamp": null,
+      "labels":
+        { "pipelines.kubeflow.org/kfp_sdk_version": "1.7.post0.41.gb3589b6c6" },
+      "annotations":
+        {
+          "pipelines.kubeflow.org/kfp_sdk_version": "1.7.post0+41.gb3589b6c6",
+          "pipelines.kubeflow.org/pipeline_compilation_time": "2023-02-27T18:49:06.199981",
+          "pipelines.kubeflow.org/pipeline_spec": '{"description": "", "inputs": [{"default": "60", "name": "units", "optional": true, "type": "Integer"}, {"default": "30", "name": "epochs", "optional": true, "type": "Integer"}, {"default": "128", "name": "batch_size", "optional": true, "type": "Integer"}, {"default": "http://rok.rok.svc.cluster.local/swift/v1/kubeflow-user/notebooks/diabetes-group06-0_diabetes-group06-workspace-tlj9g?version=e59eeea6-1b97-4615-b327-4e336bb9f99c", "name": "rok_diabetes_group06_workspace_tlj9g_url", "optional": true, "type": "String"}], "name": "diabetes-group06"}',
+        },
+    },
+  "spec":
+    {
+      "templates":
+        [
+          {
+            "name": "build-model",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "build-model-build_model",
+                      "valueFrom": { "path": "/tmp/outputs/build_model/data" },
+                    },
+                    {
+                      "name": "build-model-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    { "name": "build_model", "path": "/tmp/build_model.html" },
+                    {
+                      "name": "build-model-build_model",
+                      "path": "/tmp/outputs/build_model/data",
+                    },
+                    {
+                      "name": "build-model-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "build_model", {"outputPath": "build_model"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "build_model"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "build_model", "outputs": [{"name": "build_model", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "build_model",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "build_model",
+                    "/tmp/outputs/build_model/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "create-volume-1",
+            "inputs":
+              {
+                "parameters":
+                  [{ "name": "rok_diabetes_group06_workspace_tlj9g_url" }],
+              },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "create-volume-1-manifest",
+                      "valueFrom": { "jsonPath": "{}" },
+                    },
+                    {
+                      "name": "create-volume-1-name",
+                      "valueFrom": { "jsonPath": "{.metadata.name}" },
+                    },
+                    {
+                      "name": "create-volume-1-size",
+                      "valueFrom": { "jsonPath": "{.status.capacity.storage}" },
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  { "pipelines.kubeflow.org/max_cache_staleness": "P0D" },
+                "labels":
+                  {
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                  },
+              },
+            "resource":
+              {
+                "action": "create",
+                "manifest": "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  annotations:\n    rok/origin: '{{inputs.parameters.rok_diabetes_group06_workspace_tlj9g_url}}'\n  name: '{{workflow.name}}-diabetes-group06-workspace-tlj9g'\nspec:\n  accessModes:\n  - ReadWriteMany\n  resources:\n    requests:\n      storage: 10Gi\n  storageClassName: rok\n",
+                "setOwnerReference": true,
+              },
+          },
+          {
+            "name": "diabetes-group06",
+            "inputs":
+              {
+                "parameters":
+                  [
+                    { "name": "batch_size" },
+                    { "name": "epochs" },
+                    { "name": "rok_diabetes_group06_workspace_tlj9g_url" },
+                    { "name": "units" },
+                  ],
+              },
+            "outputs": {},
+            "metadata": {},
+            "dag":
+              {
+                "tasks":
+                  [
+                    {
+                      "name": "build-model",
+                      "template": "build-model",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                    {
+                      "name": "create-volume-1",
+                      "template": "create-volume-1",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "rok_diabetes_group06_workspace_tlj9g_url",
+                                "value": "{{inputs.parameters.rok_diabetes_group06_workspace_tlj9g_url}}",
+                              },
+                            ],
+                        },
+                    },
+                    {
+                      "name": "get-ids-csvs",
+                      "template": "get-ids-csvs",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                    {
+                      "name": "load-data",
+                      "template": "load-data",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                    {
+                      "name": "main",
+                      "template": "main",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "batch_size",
+                                "value": "{{inputs.parameters.batch_size}}",
+                              },
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                              {
+                                "name": "epochs",
+                                "value": "{{inputs.parameters.epochs}}",
+                              },
+                              {
+                                "name": "get-ids-csvs-get_ids_csvs",
+                                "value": "{{tasks.get-ids-csvs.outputs.parameters.get-ids-csvs-get_ids_csvs}}",
+                              },
+                              {
+                                "name": "load-data-load_data",
+                                "value": "{{tasks.load-data.outputs.parameters.load-data-load_data}}",
+                              },
+                              {
+                                "name": "metrics-evaluation-metrics_evaluation",
+                                "value": "{{tasks.metrics-evaluation.outputs.parameters.metrics-evaluation-metrics_evaluation}}",
+                              },
+                              {
+                                "name": "model-manipulation-build_model",
+                                "value": "{{tasks.model-manipulation.outputs.parameters.model-manipulation-build_model}}",
+                              },
+                              {
+                                "name": "model-manipulation-model_manipulation",
+                                "value": "{{tasks.model-manipulation.outputs.parameters.model-manipulation-model_manipulation}}",
+                              },
+                              {
+                                "name": "model-manipulation-split_data",
+                                "value": "{{tasks.model-manipulation.outputs.parameters.model-manipulation-split_data}}",
+                              },
+                              {
+                                "name": "model-manipulation-test_model",
+                                "value": "{{tasks.model-manipulation.outputs.parameters.model-manipulation-test_model}}",
+                              },
+                              {
+                                "name": "model-manipulation-train_model",
+                                "value": "{{tasks.model-manipulation.outputs.parameters.model-manipulation-train_model}}",
+                              },
+                              {
+                                "name": "units",
+                                "value": "{{inputs.parameters.units}}",
+                              },
+                            ],
+                        },
+                      "dependencies":
+                        [
+                          "create-volume-1",
+                          "get-ids-csvs",
+                          "load-data",
+                          "metrics-evaluation",
+                          "model-manipulation",
+                        ],
+                    },
+                    {
+                      "name": "metrics-evaluation",
+                      "template": "metrics-evaluation",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                    {
+                      "name": "model-manipulation",
+                      "template": "model-manipulation",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "batch_size",
+                                "value": "{{inputs.parameters.batch_size}}",
+                              },
+                              {
+                                "name": "build-model-build_model",
+                                "value": "{{tasks.build-model.outputs.parameters.build-model-build_model}}",
+                              },
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                              {
+                                "name": "epochs",
+                                "value": "{{inputs.parameters.epochs}}",
+                              },
+                              {
+                                "name": "split-data-split_data",
+                                "value": "{{tasks.split-data.outputs.parameters.split-data-split_data}}",
+                              },
+                              {
+                                "name": "test-model-test_model",
+                                "value": "{{tasks.test-model.outputs.parameters.test-model-test_model}}",
+                              },
+                              {
+                                "name": "train-model-train_model",
+                                "value": "{{tasks.train-model.outputs.parameters.train-model-train_model}}",
+                              },
+                              {
+                                "name": "units",
+                                "value": "{{inputs.parameters.units}}",
+                              },
+                            ],
+                        },
+                      "dependencies":
+                        [
+                          "build-model",
+                          "create-volume-1",
+                          "split-data",
+                          "test-model",
+                          "train-model",
+                        ],
+                    },
+                    {
+                      "name": "split-data",
+                      "template": "split-data",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                    {
+                      "name": "test-model",
+                      "template": "test-model",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                    {
+                      "name": "train-model",
+                      "template": "train-model",
+                      "arguments":
+                        {
+                          "parameters":
+                            [
+                              {
+                                "name": "create-volume-1-name",
+                                "value": "{{tasks.create-volume-1.outputs.parameters.create-volume-1-name}}",
+                              },
+                            ],
+                        },
+                      "dependencies": ["create-volume-1"],
+                    },
+                  ],
+              },
+          },
+          {
+            "name": "get-ids-csvs",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "get-ids-csvs-get_ids_csvs",
+                      "valueFrom": { "path": "/tmp/outputs/get_ids_csvs/data" },
+                    },
+                    {
+                      "name": "get-ids-csvs-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    {
+                      "name": "get_ids_csvs",
+                      "path": "/tmp/get_ids_csvs.html",
+                    },
+                    {
+                      "name": "get-ids-csvs-get_ids_csvs",
+                      "path": "/tmp/outputs/get_ids_csvs/data",
+                    },
+                    {
+                      "name": "get-ids-csvs-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "get_ids_csvs", {"outputPath": "get_ids_csvs"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "get_ids_csvs"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "get_ids_csvs", "outputs": [{"name": "get_ids_csvs", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "get_ids_csvs",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "get_ids_csvs",
+                    "/tmp/outputs/get_ids_csvs/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "load-data",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "load-data-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                    {
+                      "name": "load-data-load_data",
+                      "valueFrom": { "path": "/tmp/outputs/load_data/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    { "name": "load_data", "path": "/tmp/load_data.html" },
+                    {
+                      "name": "load-data-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                    {
+                      "name": "load-data-load_data",
+                      "path": "/tmp/outputs/load_data/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "load_data", {"outputPath": "load_data"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "load_data"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "load_data", "outputs": [{"name": "load_data", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "load_data",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "load_data",
+                    "/tmp/outputs/load_data/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "main",
+            "inputs":
+              {
+                "parameters":
+                  [
+                    { "name": "batch_size" },
+                    { "name": "create-volume-1-name" },
+                    { "name": "epochs" },
+                    { "name": "get-ids-csvs-get_ids_csvs" },
+                    { "name": "load-data-load_data" },
+                    { "name": "metrics-evaluation-metrics_evaluation" },
+                    { "name": "model-manipulation-build_model" },
+                    { "name": "model-manipulation-model_manipulation" },
+                    { "name": "model-manipulation-split_data" },
+                    { "name": "model-manipulation-test_model" },
+                    { "name": "model-manipulation-train_model" },
+                    { "name": "units" },
+                  ],
+              },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "main-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    { "name": "main", "path": "/tmp/main.html" },
+                    {
+                      "name": "main-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1", "get-ids-csvs", "load-data", "metrics-evaluation", "model-manipulation"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/arguments.parameters": '{"batch_size": "{{inputs.parameters.batch_size}}", "build_model": "{{inputs.parameters.model-manipulation-build_model}}", "epochs": "{{inputs.parameters.epochs}}", "get_ids_csvs": "{{inputs.parameters.get-ids-csvs-get_ids_csvs}}", "load_data": "{{inputs.parameters.load-data-load_data}}", "metrics_evaluation": "{{inputs.parameters.metrics-evaluation-metrics_evaluation}}", "model_manipulation": "{{inputs.parameters.model-manipulation-model_manipulation}}", "split_data": "{{inputs.parameters.model-manipulation-split_data}}", "test_model": "{{inputs.parameters.model-manipulation-test_model}}", "train_model": "{{inputs.parameters.model-manipulation-train_model}}", "units": "{{inputs.parameters.units}}"}',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--in", "split_data", {"inputValue": "split_data"}, "--in", "model_manipulation", {"inputValue": "model_manipulation"}, "--in", "train_model", {"inputValue": "train_model"}, "--in", "metrics_evaluation", {"inputValue": "metrics_evaluation"}, "--in", "build_model", {"inputValue": "build_model"}, "--in", "load_data", {"inputValue": "load_data"}, "--in", "test_model", {"inputValue": "test_model"}, "--in", "get_ids_csvs", {"inputValue": "get_ids_csvs"}, "--in", "units", {"inputValue": "units"}, "--in", "batch_size", {"inputValue": "batch_size"}, "--in", "epochs", {"inputValue": "epochs"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "main"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [{"name": "split_data", "type": "KaleMarshalData"}, {"name": "model_manipulation", "type": "KaleMarshalData"}, {"name": "train_model", "type": "KaleMarshalData"}, {"name": "metrics_evaluation", "type": "KaleMarshalData"}, {"name": "build_model", "type": "KaleMarshalData"}, {"name": "load_data", "type": "KaleMarshalData"}, {"name": "test_model", "type": "KaleMarshalData"}, {"name": "get_ids_csvs", "type": "KaleMarshalData"}, {"name": "units", "type": "Integer"}, {"name": "batch_size", "type": "Integer"}, {"name": "epochs", "type": "Integer"}], "name": "main", "outputs": [{"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "main",
+                  ],
+                "args":
+                  [
+                    "--in",
+                    "split_data",
+                    "{{inputs.parameters.model-manipulation-split_data}}",
+                    "--in",
+                    "model_manipulation",
+                    "{{inputs.parameters.model-manipulation-model_manipulation}}",
+                    "--in",
+                    "train_model",
+                    "{{inputs.parameters.model-manipulation-train_model}}",
+                    "--in",
+                    "metrics_evaluation",
+                    "{{inputs.parameters.metrics-evaluation-metrics_evaluation}}",
+                    "--in",
+                    "build_model",
+                    "{{inputs.parameters.model-manipulation-build_model}}",
+                    "--in",
+                    "load_data",
+                    "{{inputs.parameters.load-data-load_data}}",
+                    "--in",
+                    "test_model",
+                    "{{inputs.parameters.model-manipulation-test_model}}",
+                    "--in",
+                    "get_ids_csvs",
+                    "{{inputs.parameters.get-ids-csvs-get_ids_csvs}}",
+                    "--in",
+                    "units",
+                    "{{inputs.parameters.units}}",
+                    "--in",
+                    "batch_size",
+                    "{{inputs.parameters.batch_size}}",
+                    "--in",
+                    "epochs",
+                    "{{inputs.parameters.epochs}}",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "metrics-evaluation",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "metrics-evaluation-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                    {
+                      "name": "metrics-evaluation-metrics_evaluation",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/metrics_evaluation/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    {
+                      "name": "metrics_evaluation",
+                      "path": "/tmp/metrics_evaluation.html",
+                    },
+                    {
+                      "name": "metrics-evaluation-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                    {
+                      "name": "metrics-evaluation-metrics_evaluation",
+                      "path": "/tmp/outputs/metrics_evaluation/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "metrics_evaluation", {"outputPath": "metrics_evaluation"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "metrics_evaluation"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "metrics_evaluation", "outputs": [{"name": "metrics_evaluation", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "metrics_evaluation",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "metrics_evaluation",
+                    "/tmp/outputs/metrics_evaluation/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "model-manipulation",
+            "inputs":
+              {
+                "parameters":
+                  [
+                    { "name": "batch_size" },
+                    { "name": "build-model-build_model" },
+                    { "name": "create-volume-1-name" },
+                    { "name": "epochs" },
+                    { "name": "split-data-split_data" },
+                    { "name": "test-model-test_model" },
+                    { "name": "train-model-train_model" },
+                    { "name": "units" },
+                  ],
+              },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "model-manipulation-build_model",
+                      "valueFrom": { "path": "/tmp/outputs/build_model/data" },
+                    },
+                    {
+                      "name": "model-manipulation-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                    {
+                      "name": "model-manipulation-model_manipulation",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/model_manipulation/data" },
+                    },
+                    {
+                      "name": "model-manipulation-split_data",
+                      "valueFrom": { "path": "/tmp/outputs/split_data/data" },
+                    },
+                    {
+                      "name": "model-manipulation-test_model",
+                      "valueFrom": { "path": "/tmp/outputs/test_model/data" },
+                    },
+                    {
+                      "name": "model-manipulation-train_model",
+                      "valueFrom": { "path": "/tmp/outputs/train_model/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    {
+                      "name": "model_manipulation",
+                      "path": "/tmp/model_manipulation.html",
+                    },
+                    {
+                      "name": "model-manipulation-build_model",
+                      "path": "/tmp/outputs/build_model/data",
+                    },
+                    {
+                      "name": "model-manipulation-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                    {
+                      "name": "model-manipulation-model_manipulation",
+                      "path": "/tmp/outputs/model_manipulation/data",
+                    },
+                    {
+                      "name": "model-manipulation-split_data",
+                      "path": "/tmp/outputs/split_data/data",
+                    },
+                    {
+                      "name": "model-manipulation-test_model",
+                      "path": "/tmp/outputs/test_model/data",
+                    },
+                    {
+                      "name": "model-manipulation-train_model",
+                      "path": "/tmp/outputs/train_model/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["build-model", "create-volume-1", "split-data", "test-model", "train-model"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/arguments.parameters": '{"batch_size": "{{inputs.parameters.batch_size}}", "build_model": "{{inputs.parameters.build-model-build_model}}", "epochs": "{{inputs.parameters.epochs}}", "split_data": "{{inputs.parameters.split-data-split_data}}", "test_model": "{{inputs.parameters.test-model-test_model}}", "train_model": "{{inputs.parameters.train-model-train_model}}", "units": "{{inputs.parameters.units}}"}',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--in", "split_data", {"inputValue": "split_data"}, "--in", "train_model", {"inputValue": "train_model"}, "--in", "build_model", {"inputValue": "build_model"}, "--in", "test_model", {"inputValue": "test_model"}, "--in", "units", {"inputValue": "units"}, "--in", "batch_size", {"inputValue": "batch_size"}, "--in", "epochs", {"inputValue": "epochs"}, "--out", "split_data", {"outputPath": "split_data"}, "--out", "model_manipulation", {"outputPath": "model_manipulation"}, "--out", "train_model", {"outputPath": "train_model"}, "--out", "test_model", {"outputPath": "test_model"}, "--out", "build_model", {"outputPath": "build_model"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "model_manipulation"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [{"name": "split_data", "type": "KaleMarshalData"}, {"name": "train_model", "type": "KaleMarshalData"}, {"name": "build_model", "type": "KaleMarshalData"}, {"name": "test_model", "type": "KaleMarshalData"}, {"name": "units", "type": "Integer"}, {"name": "batch_size", "type": "Integer"}, {"name": "epochs", "type": "Integer"}], "name": "model_manipulation", "outputs": [{"name": "split_data", "type": "KaleMarshalData"}, {"name": "model_manipulation", "type": "KaleMarshalData"}, {"name": "train_model", "type": "KaleMarshalData"}, {"name": "test_model", "type": "KaleMarshalData"}, {"name": "build_model", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "model_manipulation",
+                  ],
+                "args":
+                  [
+                    "--in",
+                    "split_data",
+                    "{{inputs.parameters.split-data-split_data}}",
+                    "--in",
+                    "train_model",
+                    "{{inputs.parameters.train-model-train_model}}",
+                    "--in",
+                    "build_model",
+                    "{{inputs.parameters.build-model-build_model}}",
+                    "--in",
+                    "test_model",
+                    "{{inputs.parameters.test-model-test_model}}",
+                    "--in",
+                    "units",
+                    "{{inputs.parameters.units}}",
+                    "--in",
+                    "batch_size",
+                    "{{inputs.parameters.batch_size}}",
+                    "--in",
+                    "epochs",
+                    "{{inputs.parameters.epochs}}",
+                    "--out",
+                    "split_data",
+                    "/tmp/outputs/split_data/data",
+                    "--out",
+                    "model_manipulation",
+                    "/tmp/outputs/model_manipulation/data",
+                    "--out",
+                    "train_model",
+                    "/tmp/outputs/train_model/data",
+                    "--out",
+                    "test_model",
+                    "/tmp/outputs/test_model/data",
+                    "--out",
+                    "build_model",
+                    "/tmp/outputs/build_model/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "split-data",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "split-data-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                    {
+                      "name": "split-data-split_data",
+                      "valueFrom": { "path": "/tmp/outputs/split_data/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    { "name": "split_data", "path": "/tmp/split_data.html" },
+                    {
+                      "name": "split-data-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                    {
+                      "name": "split-data-split_data",
+                      "path": "/tmp/outputs/split_data/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "split_data", {"outputPath": "split_data"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "split_data"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "split_data", "outputs": [{"name": "split_data", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "split_data",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "split_data",
+                    "/tmp/outputs/split_data/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "test-model",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "test-model-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                    {
+                      "name": "test-model-test_model",
+                      "valueFrom": { "path": "/tmp/outputs/test_model/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    { "name": "test_model", "path": "/tmp/test_model.html" },
+                    {
+                      "name": "test-model-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                    {
+                      "name": "test-model-test_model",
+                      "path": "/tmp/outputs/test_model/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "test_model", {"outputPath": "test_model"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "test_model"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "test_model", "outputs": [{"name": "test_model", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "test_model",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "test_model",
+                    "/tmp/outputs/test_model/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+          {
+            "name": "train-model",
+            "inputs": { "parameters": [{ "name": "create-volume-1-name" }] },
+            "outputs":
+              {
+                "parameters":
+                  [
+                    {
+                      "name": "train-model-kale_mlmd_meta",
+                      "valueFrom":
+                        { "path": "/tmp/outputs/kale_mlmd_meta/data" },
+                    },
+                    {
+                      "name": "train-model-train_model",
+                      "valueFrom": { "path": "/tmp/outputs/train_model/data" },
+                    },
+                  ],
+                "artifacts":
+                  [
+                    {
+                      "name": "mlpipeline-ui-metadata",
+                      "path": "/tmp/mlpipeline-ui-metadata.json",
+                    },
+                    { "name": "train_model", "path": "/tmp/train_model.html" },
+                    {
+                      "name": "train-model-kale_mlmd_meta",
+                      "path": "/tmp/outputs/kale_mlmd_meta/data",
+                    },
+                    {
+                      "name": "train-model-train_model",
+                      "path": "/tmp/outputs/train_model/data",
+                    },
+                  ],
+              },
+            "metadata":
+              {
+                "annotations":
+                  {
+                    "kubeflow-kale.org/dependent-templates": '["create-volume-1"]',
+                    "kubeflow-kale.org/volume-name-parameters": '["create-volume-1-name"]',
+                    "pipelines.kubeflow.org/component_ref": '{"name": "diabetes-group06"}',
+                    "pipelines.kubeflow.org/component_spec": '{"description": "", "implementation": {"container": {"args": ["--out", "train_model", {"outputPath": "train_model"}, "--out", "kale_mlmd_meta", {"outputPath": "kale_mlmd_meta"}], "command": ["python3", "-u", "-m", "kale", "/home/jovyan/Diabetes_Group06.ipynb", "--step", "train_model"], "env": {"PYTHONUNBUFFERED": "1"}, "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234"}}, "inputs": [], "name": "train_model", "outputs": [{"name": "train_model", "type": "KaleMarshalData"}, {"name": "kale_mlmd_meta", "type": "Dict"}]}',
+                    "pipelines.kubeflow.org/max_cache_staleness": "P0D",
+                  },
+                "labels":
+                  {
+                    "access-ml-pipeline": "true",
+                    "access-rok": "true",
+                    "pipelines.kubeflow.org/cache_enabled": "false",
+                    "pipelines.kubeflow.org/enable_caching": "true",
+                    "pipelines.kubeflow.org/metadata_written": "true",
+                  },
+              },
+            "container":
+              {
+                "name": "",
+                "image": "gcr.io/arrikto/jupyter-kale-py38@sha256:2e1ce3427b780c0c78e7cfec527ee10c391092fdc4a8344cd76f8b83c61c5234",
+                "command":
+                  [
+                    "python3",
+                    "-u",
+                    "-m",
+                    "kale",
+                    "/home/jovyan/Diabetes_Group06.ipynb",
+                    "--step",
+                    "train_model",
+                  ],
+                "args":
+                  [
+                    "--out",
+                    "train_model",
+                    "/tmp/outputs/train_model/data",
+                    "--out",
+                    "kale_mlmd_meta",
+                    "/tmp/outputs/kale_mlmd_meta/data",
+                  ],
+                "workingDir": "/home/jovyan",
+                "env": [{ "name": "PYTHONUNBUFFERED", "value": "1" }],
+                "resources": {},
+                "volumeMounts":
+                  [{ "name": "create-volume-1", "mountPath": "/home/jovyan" }],
+                "securityContext": { "runAsUser": 0 },
+              },
+            "volumes":
+              [
+                {
+                  "name": "create-volume-1",
+                  "persistentVolumeClaim":
+                    {
+                      "claimName": "{{inputs.parameters.create-volume-1-name}}",
+                    },
+                },
+              ],
+          },
+        ],
+      "entrypoint": "diabetes-group06",
+      "arguments":
+        {
+          "parameters":
+            [
+              { "name": "units", "value": "60" },
+              { "name": "epochs", "value": "30" },
+              { "name": "batch_size", "value": "128" },
+              {
+                "name": "rok_diabetes_group06_workspace_tlj9g_url",
+                "value": "http://rok.rok.svc.cluster.local/swift/v1/kubeflow-user/notebooks/diabetes-group06-0_diabetes-group06-workspace-tlj9g?version=e59eeea6-1b97-4615-b327-4e336bb9f99c",
+              },
+            ],
+        },
+      "serviceAccountName": "pipeline-runner",
+    },
+  "status": { "startedAt": null, "finishedAt": null },
+}

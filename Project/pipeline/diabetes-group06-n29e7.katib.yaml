@@ -1,0 +1,66 @@
+apiVersion: kubeflow.org/v1beta1
+kind: Experiment
+metadata:
+  name: diabetes-group06-n29e7
+  namespace: kubeflow-user
+spec:
+  algorithm:
+    algorithmName: random
+    algorithmSettings:
+    - name: random_state
+      value: '5'
+  maxFailedTrialCount: 12
+  maxTrialCount: 200
+  objective:
+    additionalMetricNames: []
+    goal: 0.05
+    objectiveMetricName: mae540
+    type: minimize
+  parallelTrialCount: 3
+  parameters:
+  - feasibleSpace:
+      max: '90'
+      min: '30'
+      step: '30'
+    name: epochs
+    parameterType: int
+  - feasibleSpace:
+      list:
+      - '32'
+      - '64'
+      - '128'
+      - '256'
+    name: batch_size
+    parameterType: categorical
+  trialTemplate:
+    primaryContainerName: main
+    retain: true
+    trialParameters:
+    - name: kaleParamTrialName
+      reference: ${trialSpec.Name}
+    - name: epochs
+      reference: epochs
+    - name: batch_size
+      reference: batch_size
+    trialSpec:
+      apiVersion: batch/v1
+      kind: Job
+      spec:
+        backoffLimit: 0
+        template:
+          metadata:
+            annotations:
+              sidecar.istio.io/inject: 'false'
+            labels:
+              access-ml-pipeline: 'true'
+          spec:
+            containers:
+            - command:
+              - python3 -u -c "from kale.common.katibutils import create_and_wait_kfp_run;               create_and_wait_kfp_run(pipeline_id='32fb75a3-6c58-4f60-85de-40f922a4a5ee',
+                version_id='973c1bf8-e64a-4556-bf97-b151d596973e', run_name='${trialParameters.kaleParamTrialName}',
+                experiment_name='diabetes-group06-n29e7', api_version='v1beta1', pipeline_parameters={'epochs':'${trialParameters.epochs}',
+                'batch_size':'${trialParameters.batch_size}'})"
+              image: gcr.io/arrikto/kale-py38:release-2.0-l0-release-2.0-39-gc3abc739f
+              name: main
+            restartPolicy: Never
+            serviceAccountName: pipeline-runner

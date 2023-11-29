@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diabetes-group06-deployment
+  namespace: default
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: diabetes-group06
+  template:
+    metadata:
+      labels:
+        app: diabetes-group06
+    spec:
+      containers:
+        - name: diabetes-group06
+          image: diabetes-group06
+          imagePullPolicy: Never
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: diabetes-group06-service
+  namespace: default
+  labels:
+    app: diabetes-group06
+spec:
+  type: NodePort
+  selector:
+    app: diabetes-group06
+  ports:
+  - port: 8501
+    targetPort: 8501
+    nodePort: 30005
